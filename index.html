@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="老爸，生日快乐！—— 来自儿子的祝福">
+    <title>老爸，生日快乐！🎂</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 五彩纸屑 -->
+    <canvas id="confetti-canvas"></canvas>
+    <!-- 烟花画布 -->
+    <canvas id="fireworks-canvas"></canvas>
+
+    <!-- 幻灯片容器 -->
+    <div class="slides-container" id="slides-container">
+
+        <!-- ===== 第1页：首页 + 倒计时 ===== -->
+        <section class="slide active" data-slide="0">
+            <div class="slide-content">
+                <div class="fishing-deco top-left">🎣</div>
+                <div class="fishing-deco top-right">🎈</div>
+                <p class="slide-eyebrow">致我最爱的老爸</p>
+                <h1 class="hero-title">
+                    <span class="title-main">生日快乐</span>
+                    <span class="title-emoji">🎂</span>
+                </h1>
+                <p class="hero-sub">1977 — 2026 · 第49个春秋</p>
+
+                <div class="countdown-box" id="countdown-box">
+                    <p class="countdown-label">距离老爸的生日还有</p>
+                    <div class="countdown-timer" id="countdown-timer">
+                        <div class="time-unit">
+                            <span class="time-num" id="cd-days">--</span>
+                            <span class="time-label">天</span>
+                        </div>
+                        <div class="time-unit">
+                            <span class="time-num" id="cd-hours">--</span>
+                            <span class="time-label">时</span>
+                        </div>
+                        <div class="time-unit">
+                            <span class="time-num" id="cd-mins">--</span>
+                            <span class="time-label">分</span>
+                        </div>
+                        <div class="time-unit">
+                            <span class="time-num" id="cd-secs">--</span>
+                            <span class="time-label">秒</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="birthday-today" id="birthday-today" style="display:none;">
+                    <p class="today-text">🎉 今天就是老爸的生日！🎉</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 第2页：互动蛋糕 ===== -->
+        <section class="slide" data-slide="1">
+            <div class="slide-content">
+                <h2 class="slide-title">许个愿，吹蜡烛</h2>
+                <p class="slide-hint">点击蜡烛，一根根吹灭它 ✨</p>
+
+                <div class="cake-stage">
+                    <div class="cake" id="cake">
+                        <div class="candles">
+                            <div class="candle" data-index="0"><div class="flame"></div></div>
+                            <div class="candle" data-index="1"><div class="flame"></div></div>
+                            <div class="candle" data-index="2"><div class="flame"></div></div>
+                            <div class="candle" data-index="3"><div class="flame"></div></div>
+                            <div class="candle" data-index="4"><div class="flame"></div></div>
+                        </div>
+                        <div class="cake-layer top"><div class="icing"></div></div>
+                        <div class="cake-layer middle"><div class="drip"></div></div>
+                        <div class="cake-layer bottom"><div class="drip"></div></div>
+                        <div class="plate"></div>
+                    </div>
+                </div>
+
+                <div class="wish-message" id="wish-message">
+                    <p class="wish-text">愿望成真！</p>
+                    <p class="wish-sub">老爸，愿您所有的愿望都能实现</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 第3页：健康祝福（钓鱼主题） ===== -->
+        <section class="slide" data-slide="2">
+            <div class="slide-content">
+                <div class="fishing-deco corner">🎣</div>
+                <h2 class="slide-title">给老爸的健康提醒</h2>
+                <p class="slide-hint">儿子唠叨几句，老爸别嫌烦 😄</p>
+
+                <div class="health-cards">
+                    <div class="health-card">
+                        <div class="health-icon">🚭</div>
+                        <h3>少抽烟</h3>
+                        <p>烟少抽两口，肺多喘口气。想抽烟的时候去钓会儿鱼，鱼比烟有意思多了。</p>
+                    </div>
+                    <div class="health-card">
+                        <div class="health-icon">🚶</div>
+                        <h3>多运动</h3>
+                        <p>别老坐着，每天出去溜达溜达。钓鱼的时候也站起来活动活动，别一坐就是一整天。</p>
+                    </div>
+                    <div class="health-card">
+                        <div class="health-icon">🥗</div>
+                        <h3>好好吃饭</h3>
+                        <p>按时吃饭，少喝点酒。钓鱼归钓鱼，饭还是要按时吃的，别让妈操心。</p>
+                    </div>
+                    <div class="health-card">
+                        <div class="health-icon">😊</div>
+                        <h3>少操心</h3>
+                        <p>我都长大了，您就别总替我操心了。多笑笑，少皱眉，开心比什么都重要。</p>
+                    </div>
+                    <div class="health-card">
+                        <div class="health-icon">🩺</div>
+                        <h3>定期体检</h3>
+                        <p>每年体检别拖，身体有问题早点发现。您健康，就是我们最大的福气。</p>
+                    </div>
+                    <div class="health-card fishing-card">
+                        <div class="health-icon">🎣</div>
+                        <h3>钓鱼提醒</h3>
+                        <p>钓鱼记得防晒、带够水、别站太久。钓不到也没关系，享受过程就好。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 第4页：心里话 ===== -->
+        <section class="slide" data-slide="3">
+            <div class="slide-content">
+                <h2 class="slide-title">来自儿子的心里话</h2>
+                <div class="letter-card">
+                    <div class="letter-body">
+                        <p>老爸：</p>
+                        <p>您不是那种会把"我爱你"挂在嘴边的人，我也不是。但有些话，写下来比说出来容易。</p>
+                        <p>从小到大，您给我的感觉就是——稳。不管家里遇到什么事，您从来不慌，默默扛着就过去了。小时候觉得您严厉，长大后才明白，那不是冷，是您把温柔都藏在了行动里。</p>
+                        <p>您送我上学时从不回头，但我知道您会在后视镜里看我。您从不夸我，但听到别人说我好，您比谁都高兴。您嘴上说"随便你"，但每次我做的决定，您都默默支持。</p>
+                        <p>49岁了，老爸。别太拼了，该歇就歇。鱼可以慢慢钓，日子可以慢慢过。您把我养大，接下来换我陪您变老。</p>
+                        <p>新的一岁，就一个愿望：<strong>您健康、开心，比什么都强。</strong></p>
+                        <p>生日快乐，老爸。</p>
+                    </div>
+                    <div class="letter-sign">
+                        <p>—— 你的儿子 <span class="nickname" id="nickname-placeholder">鸣</span></p>
+                        <p class="letter-date" id="letter-date"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 导航控制 -->
+    <div class="nav-controls">
+        <button class="nav-btn prev" id="prev-btn" aria-label="上一页">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <div class="nav-dots" id="nav-dots">
+            <span class="dot active" data-index="0"></span>
+            <span class="dot" data-index="1"></span>
+            <span class="dot" data-index="2"></span>
+            <span class="dot" data-index="3"></span>
+        </div>
+        <button class="nav-btn next" id="next-btn" aria-label="下一页">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- 音乐控制 -->
+    <button class="music-btn playing" id="music-btn" aria-label="播放或暂停音乐">
+        <svg class="icon-play" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M9 5L19 12L9 19V5Z" fill="currentColor"/>
+        </svg>
+        <svg class="icon-pause" width="22" height="22" viewBox="0 0 24 24" fill="none" style="display:none;">
+            <rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/>
+            <rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/>
+        </svg>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>

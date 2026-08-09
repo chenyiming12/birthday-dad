@@ -60,16 +60,17 @@
         <section class="slide" data-slide="1">
             <div class="slide-content">
                 <h2 class="slide-title">许个愿，吹蜡烛</h2>
-                <p class="slide-hint">点击蜡烛，一根根吹灭它 ✨</p>
+                <p class="slide-hint">请依次点击亮着的 5 根蜡烛，一根根吹灭它 ✨</p>
+                <p class="candle-progress" id="candle-progress" aria-live="polite">还剩 5 根蜡烛</p>
 
                 <div class="cake-stage">
                     <div class="cake" id="cake">
                         <div class="candles">
-                            <div class="candle" data-index="0"><div class="flame"></div></div>
-                            <div class="candle" data-index="1"><div class="flame"></div></div>
-                            <div class="candle" data-index="2"><div class="flame"></div></div>
-                            <div class="candle" data-index="3"><div class="flame"></div></div>
-                            <div class="candle" data-index="4"><div class="flame"></div></div>
+                            <button class="candle" type="button" data-index="0" aria-label="吹灭第1根蜡烛"><span class="flame"></span></button>
+                            <button class="candle" type="button" data-index="1" aria-label="吹灭第2根蜡烛"><span class="flame"></span></button>
+                            <button class="candle" type="button" data-index="2" aria-label="吹灭第3根蜡烛"><span class="flame"></span></button>
+                            <button class="candle" type="button" data-index="3" aria-label="吹灭第4根蜡烛"><span class="flame"></span></button>
+                            <button class="candle" type="button" data-index="4" aria-label="吹灭第5根蜡烛"><span class="flame"></span></button>
                         </div>
                         <div class="cake-layer top"><div class="icing"></div></div>
                         <div class="cake-layer middle"><div class="drip"></div></div>
@@ -78,7 +79,7 @@
                     </div>
                 </div>
 
-                <div class="wish-message" id="wish-message">
+                <div class="wish-message" id="wish-message" aria-live="polite">
                     <p class="wish-text">愿望成真！</p>
                     <p class="wish-sub">老爸，愿您所有的愿望都能实现</p>
                 </div>
@@ -91,6 +92,7 @@
                 <div class="fishing-deco corner">🎣</div>
                 <h2 class="slide-title">给老爸的健康提醒</h2>
                 <p class="slide-hint">儿子唠叨几句，老爸别嫌烦 😄</p>
+                <p class="scroll-hint">内容较多，可以上下滑动查看</p>
 
                 <div class="health-cards">
                     <div class="health-card">
@@ -131,6 +133,7 @@
         <section class="slide" data-slide="3">
             <div class="slide-content">
                 <h2 class="slide-title">来自儿子的心里话</h2>
+                <p class="scroll-hint">信比较长，可以在信纸里上下滑动阅读</p>
                 <div class="letter-card">
                     <div class="letter-body">
                         <p>老爸：</p>
@@ -152,27 +155,32 @@
     </div>
 
     <!-- 导航控制 -->
-    <div class="nav-controls">
-        <button class="nav-btn prev" id="prev-btn" aria-label="上一页">
+    <div class="nav-area" aria-label="页面切换">
+        <p class="nav-tip" id="nav-tip" aria-live="polite">点“下一页”继续 · 第 1 / 4 页</p>
+        <div class="nav-controls">
+        <button class="nav-btn prev" id="prev-btn" type="button" aria-label="上一页">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
+            <span>上一页</span>
         </button>
         <div class="nav-dots" id="nav-dots">
-            <span class="dot active" data-index="0"></span>
-            <span class="dot" data-index="1"></span>
-            <span class="dot" data-index="2"></span>
-            <span class="dot" data-index="3"></span>
+            <button class="dot active" type="button" data-index="0" aria-label="前往第1页" aria-current="page"></button>
+            <button class="dot" type="button" data-index="1" aria-label="前往第2页"></button>
+            <button class="dot" type="button" data-index="2" aria-label="前往第3页"></button>
+            <button class="dot" type="button" data-index="3" aria-label="前往第4页"></button>
         </div>
-        <button class="nav-btn next" id="next-btn" aria-label="下一页">
+        <button class="nav-btn next" id="next-btn" type="button" aria-label="下一页">
+            <span>下一页</span>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </button>
+        </div>
     </div>
 
     <!-- 音乐控制 -->
-    <button class="music-btn playing" id="music-btn" aria-label="播放或暂停音乐">
+    <button class="music-btn" id="music-btn" type="button" aria-label="播放生日快乐歌" aria-pressed="false">
         <svg class="icon-play" width="22" height="22" viewBox="0 0 24 24" fill="none">
             <path d="M9 5L19 12L9 19V5Z" fill="currentColor"/>
         </svg>
@@ -180,6 +188,7 @@
             <rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/>
             <rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/>
         </svg>
+        <span id="music-label">播放音乐</span>
     </button>
 
     <script src="script.js"></script>

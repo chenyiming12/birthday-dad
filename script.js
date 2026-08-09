@@ -4,17 +4,34 @@ const slides = document.querySelectorAll('.slide');
 const dots = document.querySelectorAll('.dot');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
+const navTip = document.getElementById('nav-tip');
 const totalSlides = slides.length;
 let currentSlide = 0;
+const slideTips = [
+    '点“下一页”继续',
+    '点亮着的蜡烛许愿',
+    '上下滑动可看全部提醒',
+    '在信纸里上下滑动阅读'
+];
 
 function goToSlide(index) {
     if (index < 0) index = 0;
     if (index > totalSlides - 1) index = totalSlides - 1;
     currentSlide = index;
     slidesContainer.style.transform = `translateX(-${index * 100}vw)`;
-    dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+    dots.forEach((dot, i) => {
+        const isActive = i === index;
+        dot.classList.toggle('active', isActive);
+        if (isActive) {
+            dot.setAttribute('aria-current', 'page');
+        } else {
+            dot.removeAttribute('aria-current');
+        }
+    });
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === totalSlides - 1;
+    navTip.textContent = `${slideTips[index]} · 第 ${index + 1} / ${totalSlides} 页`;
+    slides[index].scrollTop = 0;
 }
 
 prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
@@ -52,7 +69,6 @@ document.addEventListener('keydown', (e) => {
 
 // 初始化按钮状态
 goToSlide(0);
-
 
 // ===== 倒计时 =====
 const birthdayDate = new Date('2026-08-09T00:00:00+08:00');
@@ -243,13 +259,18 @@ updateFireworks();
 // ===== 蜡烛交互 =====
 var candles = document.querySelectorAll('.candle');
 var wishMessage = document.getElementById('wish-message');
+var candleProgress = document.getElementById('candle-progress');
 var blownCount = 0;
 
 candles.forEach(function(candle) {
     candle.addEventListener('click', function() {
         if (candle.classList.contains('out')) return;
         candle.classList.add('out');
+        candle.setAttribute('aria-pressed', 'true');
         blownCount++;
+        var remaining = candles.length - blownCount;
+        candleProgress.textContent = remaining > 0 ? `还剩 ${remaining} 根蜡烛` : '蜡烛全部吹灭，愿望马上实现！';
+        candleProgress.classList.toggle('complete', remaining === 0);
         var rect = candle.getBoundingClientRect();
         createConfetti(rect.left + rect.width / 2, rect.top, 8);
         playSound('blow');
@@ -258,7 +279,7 @@ candles.forEach(function(candle) {
             setTimeout(function() {
                 wishMessage.classList.add('show');
                 startFireworks();
-                playBirthdaySong();
+                if (!musicPlaying) playBirthdaySong();
                 for (var i = 0; i < 5; i++) {
                     (function(idx) {
                         setTimeout(function() {
@@ -289,6 +310,15 @@ var audioCtx = null;
 var musicPlaying = false;
 var birthdaySongTimeout = null;
 var oscillatorNodes = [];
+var musicBtn = document.getElementById('music-btn');
+var musicLabel = document.getElementById('music-label');
+
+function updateMusicButton() {
+    musicBtn.classList.toggle('playing', musicPlaying);
+    musicBtn.setAttribute('aria-pressed', String(musicPlaying));
+    musicBtn.setAttribute('aria-label', musicPlaying ? '暂停生日快乐歌' : '播放生日快乐歌');
+    musicLabel.textContent = musicPlaying ? '暂停音乐' : '播放音乐';
+}
 
 function getAudioCtx() {
     if (!audioCtx) {
@@ -359,7 +389,13 @@ function playNote(freq, startTime, duration) {
 
 function playBirthdaySong() {
     var ctx = getAudioCtx();
-    if (ctx.state === 'suspended') ctx.resume();
+    if (ctx.state === 'suspended') {
+        ctx.resume().then(function() {
+            if (!musicPlaying) playBirthdaySong();
+        });
+        return;
+    }
+    if (birthdaySongTimeout) clearTimeout(birthdaySongTimeout);
     var currentTime = ctx.currentTime;
     oscillatorNodes = [];
 
@@ -370,13 +406,13 @@ function playBirthdaySong() {
     });
 
     musicPlaying = true;
-    document.getElementById('music-btn').classList.add('playing');
+    updateMusicButton();
 
     var totalDuration = birthdayMelody.reduce(function(sum, n) { return sum + n.d; }, 0);
     birthdaySongTimeout = setTimeout(function() {
-        musicPlaying = false;
-        document.getElementById('music-btn').classList.remove('playing');
         oscillatorNodes = [];
+        birthdaySongTimeout = null;
+        if (musicPlaying) playBirthdaySong();
     }, totalDuration * 1000);
 }
 
@@ -390,11 +426,11 @@ function stopMusic() {
     });
     oscillatorNodes = [];
     musicPlaying = false;
-    document.getElementById('music-btn').classList.remove('playing');
+    updateMusicButton();
 }
 
 // 音乐按钮
-document.getElementById('music-btn').addEventListener('click', function() {
+musicBtn.addEventListener('click', function() {
     if (musicPlaying) {
         stopMusic();
     } else {
@@ -402,31 +438,33 @@ document.getElementById('music-btn').addEventListener('click', function() {
     }
 });
 
-// 页面加载后自动播放音乐（需要用户交互后才能生效，浏览器限制）
-function autoPlayMusic() {
+// 页面打开时立即尝试自动播放。若浏览器拦截有声自动播放，
+// 点击欢迎页的“知道了，开始看”后会立即开始，并持续循环。
+function startAutoMusic() {
+    if (musicPlaying) return;
     try {
         var ctx = getAudioCtx();
         if (ctx.state === 'suspended') {
             ctx.resume().then(function() {
-                setTimeout(playBirthdaySong, 500);
-            });
+                if (!musicPlaying) playBirthdaySong();
+            }).catch(function() {});
         } else {
             playBirthdaySong();
         }
-    } catch(e) {
-        // 浏览器限制，等待用户首次点击
-        document.body.addEventListener('click', function() {
-            if (!musicPlaying) playBirthdaySong();
-        }, { once: true });
+    } catch (e) {
+        // 保留播放按钮作为不支持 Web Audio 浏览器的手动入口。
     }
 }
 
-// 尝试自动播放
-setTimeout(autoPlayMusic, 800);
+updateMusicButton();
+startAutoMusic();
 
-// 如果自动播放失败，首次点击页面时播放
-document.body.addEventListener('click', function() {
-    if (!musicPlaying && !audioCtx) {
-        playBirthdaySong();
-    }
-}, { once: true });
+// 若浏览器阻止首次有声自动播放，用户第一次操作页面时立即开始。
+function startMusicOnFirstInteraction() {
+    startAutoMusic();
+    document.removeEventListener('click', startMusicOnFirstInteraction);
+    document.removeEventListener('keydown', startMusicOnFirstInteraction);
+}
+
+document.addEventListener('click', startMusicOnFirstInteraction, { once: true });
+document.addEventListener('keydown', startMusicOnFirstInteraction, { once: true });
